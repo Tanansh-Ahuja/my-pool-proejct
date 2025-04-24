@@ -18,12 +18,6 @@ app.include_router(monthly_packages.router)
 app.include_router(blocked_dates.router)
 app.include_router(group_members.router)
 
-@app.get("/debug-test")
-def debug_test():
-    print("✅ This should print in terminal")
-    logger.info("✅ Logger message")
-    return {"status": "ok"}
-
 
 # Run with uvicorn
 # uvicorn main:app --reload
