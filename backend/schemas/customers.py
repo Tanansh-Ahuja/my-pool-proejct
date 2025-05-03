@@ -16,12 +16,15 @@ class CustomerCreate(CustomerBase):
     pass
 
 class CustomerUpdate(BaseModel):
-    full_name: Optional[str]
-    phone_number: Optional[PhoneStr]
-    gender: Optional[str]
-    age: Optional[int]
-    address: Optional[str]
-    notes: Optional[str]
+    full_name: Optional[str]= None
+    phone_number: Optional[PhoneStr]= None
+    gender: Optional[str] = None
+    age: Optional[int]= None
+    notes: Optional[str]= None
+    swimmingminutes: Optional[int]= None
+
+    class Config:
+        from_attributes = True
 
 class CustomerOut(CustomerBase):
     customer_id: int

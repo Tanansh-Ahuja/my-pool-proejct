@@ -6,7 +6,7 @@ TextStr = Annotated[str, StringConstraints(max_length=500)]
 
 class BookingBase(BaseModel):
     customer_id: int
-    group_id: str
+    booking_time: Optional[datetime]
     booking_date: date
     slot_start: time
     slot_end: time
@@ -20,6 +20,7 @@ class BookingCreate(BookingBase):
     pass
 
 class BookingUpdate(BaseModel):
+    booking_time: Optional[datetime]
     booking_date: Optional[date]
     slot_start: Optional[time]
     slot_end: Optional[time]
@@ -32,7 +33,7 @@ class BookingUpdate(BaseModel):
 
 class BookingOut(BookingBase):
     booking_id: int
-    booking_time: datetime
+    booking_time: Optional[datetime]
     deleted: bool
 
     class Config:

@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from decimal import Decimal
+from datetime import datetime, date, time
 
 class GroupMemberBase(BaseModel):
-    group_id: str
     member_id: int
     booking_id: int
     full_name: str
@@ -19,11 +19,29 @@ class GroupMemberBase(BaseModel):
     cap_cost: Decimal = 0.00
     needs_goggles: bool = False
     goggles_cost: Decimal = 0.00
-    band_color: Optional[str] = None
     special_notes: Optional[str] = None
 
-class GroupMemberCreate(GroupMemberBase):
-    pass
+class GroupMemberCreate(BaseModel):
+    customer_id:Optional[int]=None
+    full_name: str
+    age: int
+    gender: str
+    needs_swimwear: bool = False
+    swimwear_type: Optional[str] = None  # shorts, shorts+tshirt, female-set
+    needs_tube: bool = False
+    needs_cap: bool = False
+    needs_goggles: bool = False
+    booking_time: datetime
+    booking_date: date
+    slot_start: time
+    slot_end: time
+
+# Model for what we save in DB (DB Model) - extra fields like IDs
+class GroupMemberDB(GroupMemberCreate):
+    member_id: int
+    booking_id: int
+    booking_time: datetime
+    special_notes: Optional[str] = None
 
 class GroupMemberUpdate(BaseModel):
     age: Optional[int]
@@ -37,11 +55,9 @@ class GroupMemberUpdate(BaseModel):
     cap_cost: Optional[Decimal]
     needs_goggles: Optional[bool]
     goggles_cost: Optional[Decimal]
-    band_color: Optional[str]
     special_notes: Optional[str]
 
 class GroupMemberOut(GroupMemberBase):
-    group_id: str
     member_id: int
     booking_id: int
     full_name: str
@@ -57,12 +73,11 @@ class GroupMemberOut(GroupMemberBase):
     cap_cost: Optional[Decimal]
     needs_goggles: Optional[bool]
     goggles_cost: Optional[Decimal]
-    band_color: Optional[str]
     special_notes: Optional[str]
     class Config:
         from_attributes = True
 
 
 class GroupWithMembers(BaseModel):
-    group_id: str
+    booking_id: int
     group_members: List[GroupMemberOut]
