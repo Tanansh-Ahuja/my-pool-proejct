@@ -38,3 +38,12 @@ class BookingOut(BookingBase):
 
     class Config:
         from_attributes = True
+
+class CustomerbookingOut(BookingBase):
+    booking_id: int
+    booking_time: Optional[datetime]
+    deleted: bool
+    rental_total: Optional[int]
+
+    class Config:
+        from_attributes = True

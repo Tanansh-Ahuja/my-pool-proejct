@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 
-from schemas.bookings import BookingCreate, BookingOut
+from schemas.bookings import BookingCreate, BookingOut, CustomerbookingOut
 from schemas.group_members import GroupMemberCreate
 
-from crud.bookings import create_booking, get_booking, get_all_bookings, create_booking_with_members
-from crud.bookings import update_booking, delete_booking, get_bookings_for_date
+from crud.bookings import create_booking, get_booking, get_all_bookings, create_booking_with_members, mark_booking_as_paid, cancel_booking
+from crud.bookings import update_booking, delete_booking, get_bookings_for_date, get_all_bookings_of_customer,get_revenue_for_date
 import crud.settings as crud_settings
 
 from utils.auth import get_current_user
@@ -38,6 +38,23 @@ def create_booking_route(
 @router.get("/", response_model=list[BookingOut])
 def read_all_bookings(db: Session = Depends(get_db)):
     return get_all_bookings(db)
+
+@router.get("/customer/me", response_model=List[CustomerbookingOut])
+def get_customer_bookings(current_user: User = Depends(get_current_user),db: Session = Depends(get_db),skip: int = 0,limit: int = 10):
+    return get_all_bookings_of_customer(current_user.user_id,db,skip,limit)
+
+@router.get("/revenue/{booking_date}")
+def get_daily_revenue(booking_date: date, db: Session = Depends(get_db)):
+    return get_revenue_for_date(db, booking_date)
+
+@router.patch("/mark-paid/{booking_id}", response_model=BookingOut)
+def mark_paid(booking_id: int, db: Session = Depends(get_db)):
+    return mark_booking_as_paid(db, booking_id)
+
+@router.patch("/cancel/{booking_id}", response_model=BookingOut)
+def cancel(booking_id: int, db: Session = Depends(get_db)):
+    return cancel_booking(db, booking_id)
+
 
 @router.get("/by-date/{booking_date}", response_model=list[BookingOut])
 def get_bookings_by_date(booking_date: date, db: Session = Depends(get_db)):

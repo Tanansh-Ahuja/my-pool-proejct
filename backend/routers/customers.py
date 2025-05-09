@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from schemas.customers import CustomerCreate, CustomerOut, CustomerUpdate
-from crud.customers import update_customer_by_user_id, create_customer, get_customer, get_all_customers, update_customer, delete_customer
+from schemas.customers import CustomerCreate, CustomerOut, CustomerUpdate, CustomerProfileOut
+from crud.customers import update_customer_by_user_id, create_customer, get_customer_by_customer_id, get_all_customers, update_customer, delete_customer, get_me
 from utils.auth import get_current_user
 from models import User
 
@@ -15,6 +15,14 @@ def create_customer_route(customer: CustomerCreate, db: Session = Depends(get_db
 @router.get("/", response_model=list[CustomerOut])
 def read_all_customers(db: Session = Depends(get_db)):
     return get_all_customers(db)
+
+@router.get("/me", response_model=CustomerProfileOut)
+def get_my_profile(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return get_me(db,current_user)
+    
 
 @router.put("/UpdateMe", response_model=CustomerOut)
 def update_my_customer_profile(
@@ -30,7 +38,7 @@ def update_my_customer_profile(
 
 @router.get("/{customer_id}", response_model=CustomerOut)
 def read_customer(customer_id: int, db: Session = Depends(get_db)):
-    db_customer = get_customer(db, customer_id)
+    db_customer = get_customer_by_customer_id(db, customer_id)
     if not db_customer:
         raise HTTPException(status_code=404, detail="Customer not found")
     return db_customer

@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from models import GroupMember
 from schemas.group_members import GroupMemberCreate, GroupMemberUpdate, GroupMemberOut
 from schemas.bookings import BookingCreate
-import random
 
 
 def create_group_members(db: Session , members_data: List[GroupMemberCreate],new_booking: BookingCreate,amount_per_person: int):

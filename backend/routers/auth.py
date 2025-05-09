@@ -35,7 +35,7 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
             phone_number=user.phone_number,
             gender=user.gender,
             age=user.age,
-            swimming_minutes = user.swimming_minutes,
+            swimming_minutes = 0,
             notes=user.notes,
             user_id = new_user.user_id
         )

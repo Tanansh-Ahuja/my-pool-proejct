@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from routers import customers, bookings, payments, monthly_packages,blocked_dates, group_members , settings, earnings, notice, auth
 import logging
+from fastapi.middleware.cors import CORSMiddleware
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -8,6 +9,14 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="Pool Party Roorkee API",
     version="1.0.0" 
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500"],  # or ["*"] for all origins (not recommended in production)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include routers

@@ -33,3 +33,18 @@ class CustomerOut(CustomerBase):
 
     class Config:
         from_attributes = True
+
+class CustomerProfileOut(BaseModel):
+    customer_id: int
+    full_name: str
+    phone_number: str
+    gender: Optional[str]
+    age: Optional[int]
+    swimming_minutes: Optional[int]
+    registered_at: datetime
+    username: str
+    email: str
+    role: str
+
+    class Config:
+        from_attributes = True
