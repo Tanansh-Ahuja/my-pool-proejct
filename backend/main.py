@@ -2,9 +2,12 @@ from fastapi import FastAPI
 from routers import customers, bookings, payments, monthly_packages,blocked_dates, group_members , settings, earnings, notice, auth
 import logging
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Load environment variables from .env file
+load_dotenv()
+ALLOW_ORIGIN = os.getenv("ALLOW_ORIGIN")
 
 app = FastAPI(
     title="Pool Party Roorkee API",
@@ -13,7 +16,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500"],  # or ["*"] for all origins (not recommended in production)
+    allow_origins=[f"{ALLOW_ORIGIN}"],  # or ["*"] for all origins (not recommended in production)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,11 +34,5 @@ app.include_router(earnings.router)
 app.include_router(notice.router)
 app.include_router(auth.router)
 
-
-@app.get("/debug-test")
-def debug_test():
-    print("✅ This should print in terminal")
-    logger.info("✅ Logger message")
-    return {"status": "ok"}
 # Run with uvicorn
 # uvicorn main:app --reload
