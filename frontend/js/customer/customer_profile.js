@@ -1,15 +1,11 @@
+import { BASE_URL } from "./../config.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("access_token");
     const messageEl = document.getElementById("message");
   
     if (!token) {
       alert("Please log in first.");
-      window.location.href = "/frontend/index.html";
-      return;
-    }
-
-    if (localStorage.getItem("role")!="customer") {
-      alert("You Are not authorised to view this page");
       window.location.href = "/frontend/index.html";
       return;
     }
@@ -39,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
-      const res = await fetch("http://localhost:8000/customers/me", {
+      const res = await fetch(`${ BASE_URL }/customers/me`, {
         headers,
       });
       if (!res.ok) throw new Error("Failed to fetch profile.");
@@ -75,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       console.log("Updated data: ",updatedData);
       try {
-        const res = await fetch("http://localhost:8000/customers/UpdateMe", {
+        const res = await fetch(`${BASE_URL}/customers/UpdateMe`, {
           method: "PUT",
           headers,
           body: JSON.stringify(updatedData),

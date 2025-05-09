@@ -1,3 +1,5 @@
+import { BASE_URL } from "./../config.js";
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("signup-form");
   
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
       };
       console.log(payload);
       try {
-        const response = await fetch("http://localhost:8000/auth/signup", {
+        const response = await fetch(`${BASE_URL}/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

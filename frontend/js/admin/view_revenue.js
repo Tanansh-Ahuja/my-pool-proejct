@@ -1,4 +1,6 @@
 // view_revenue.js
+import { BASE_URL } from "./../config.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("access_token");
   if (!token) {
@@ -24,7 +26,7 @@ document.getElementById("fetch-revenue-btn").addEventListener("click", async () 
   
     try {
       const token = localStorage.getItem("access_token");
-      const res = await fetch(`http://localhost:8000/bookings/revenue/${date}`, {
+      const res = await fetch(`${BASE_URL}/bookings/revenue/${date}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

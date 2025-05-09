@@ -1,3 +1,5 @@
+import { BASE_URL } from "./../config.js";
+
 let currentPage = 0;
 const limit = 10;
 
@@ -42,7 +44,7 @@ function decodeJWT(token) {
 async function loadBookings(customerId, page) {
   const skip = page * limit;
 
-  const response = await fetch(`http://localhost:8000/bookings/customer/me?skip=${skip}&limit=${limit}`,
+  const response = await fetch(`${BASE_URL}/bookings/customer/me?skip=${skip}&limit=${limit}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,

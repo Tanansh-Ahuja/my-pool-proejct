@@ -1,3 +1,5 @@
+import { BASE_URL } from "./../config.js";
+
 export async function loadNavbar() {
   const navbarPlaceholder = document.getElementById("navbar-placeholder");
   if (!navbarPlaceholder) return;
@@ -111,7 +113,7 @@ async function is_token_expired(token)
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       };
-      const userRes = await fetch("http://localhost:8000/customers/me", {
+      const userRes = await fetch(`${BASE_URL}/customers/me`, {
         headers,
       });
 

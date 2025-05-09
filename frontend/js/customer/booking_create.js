@@ -1,4 +1,5 @@
 // booking_create.js
+import { BASE_URL } from "./../config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("access_token");
@@ -173,7 +174,7 @@ submitBookingBtn.addEventListener("click", async () => {
   // Submit to backend
   try {
     const token = localStorage.getItem("access_token");
-    const res = await fetch("http://localhost:8000/bookings/CustomerCreateBooking", {
+    const res = await fetch(`${BASE_URL}/bookings/CustomerCreateBooking`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

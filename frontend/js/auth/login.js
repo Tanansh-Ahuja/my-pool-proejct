@@ -1,3 +1,5 @@
+import { BASE_URL } from "./../config.js";
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("login-form");
     const passwordInput = document.getElementById("password");
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const upassword = form.password.value;
   
       try {
-        const response = await fetch("http://localhost:8000/auth/login", {
+        const response = await fetch(`${BASE_URL}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email:uemail, password:upassword }),
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
             Authorization: `Bearer ${data.access_token}`,
             "Content-Type": "application/json",
           };
-          const userRes = await fetch("http://localhost:8000/customers/me", {
+          const userRes = await fetch(`${ BASE_URL }/customers/me`, {
             headers,
           });
           if (!userRes.ok) throw new Error("Invalid token");

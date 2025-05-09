@@ -1,3 +1,5 @@
+import { BASE_URL } from "./../config.js";
+
 // view_bookings.js
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("access_token");
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`http://localhost:8000/bookings/by-date/${date}`, {
+      const response = await fetch(`${BASE_URL}/bookings/by-date/${date}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,10 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = "<p>No bookings for this date.</p>";
         return;
       }
-      console.log(bookings);
+      
       bookings.forEach((booking) => {
         const card = document.createElement("div");
         card.className = "booking-card";
+        const isPaid = booking.payment_status.toLowerCase() === "paid";
         card.innerHTML = `
           <h3>Booking ID: ${booking.booking_id}</h3>
           <p>Date: ${booking.booking_date}</p>
@@ -58,9 +61,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>Total Amount: ₹${booking.total_amount}</p>
           <p>Payment Status: ${booking.payment_status}</p>
           <p>Band Color: ${booking.band_color}</p>
-          <button class="mark-paid-btn" data-id="${booking.booking_id}">Mark as Paid</button>
-          <button class="cancel-booking-btn" data-id="${booking.booking_id}">Cancel Booking</button>
-        `;
+          ${
+      isPaid
+        ? ""
+        : `<button class="mark-paid-btn" data-id="${booking.booking_id}">Mark as Paid</button>`
+    }
+    <button class="cancel-booking-btn" data-id="${booking.booking_id}" ${
+      isPaid ? "disabled" : ""
+    }>Cancel Booking</button>
+  `;
         container.appendChild(card);
       });
     } catch (error) {
@@ -76,7 +85,7 @@ document.getElementById("bookings-container").addEventListener("click", async (e
         console.log(bookingId);
         try {
             const token = localStorage.getItem("access_token");
-            const res = await fetch(`http://localhost:8000/bookings/mark-paid/${bookingId}`, {
+            const res = await fetch(`${BASE_URL}/bookings/mark-paid/${bookingId}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`, // Add the token in the header
@@ -103,7 +112,7 @@ document.getElementById("bookings-container").addEventListener("click", async (e
         
         try {
             const token = localStorage.getItem("access_token");
-            const res = await fetch(`http://localhost:8000/bookings/cancel/${bookingId}`, {
+            const res = await fetch(`${BASE_URL}/bookings/cancel/${bookingId}`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${token}`, // Add the token in the header
