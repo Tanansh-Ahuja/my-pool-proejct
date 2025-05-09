@@ -1,5 +1,18 @@
 // booking_create.js
 
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    window.location.href = "/frontend/login.html";
+    return;
+  }
+  if (localStorage.getItem("role")!="customer") {
+      alert("You Are not authorised to view this page");
+      window.location.href = "/frontend/index.html";
+      return;
+    }
+});
+
 const customerCardsContainer = document.getElementById("customer-cards-container");
 const addPersonBtn = document.getElementById("add-person-btn");
 const submitBookingBtn = document.getElementById("submit-booking-btn");

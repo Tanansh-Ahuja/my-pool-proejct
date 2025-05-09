@@ -3,13 +3,16 @@ export async function loadNavbar() {
   if (!navbarPlaceholder) return;
 
   try {
+    const currentPath = window.location.pathname;
+    // This ensures we only run token expiration check on the home page
+    const isHomePage = currentPath.endsWith("index.html") || currentPath === "/";
+
     const res = await fetch("/frontend/navbar.html");
     const html = await res.text();
     navbarPlaceholder.innerHTML = html;
 
     const navLinks = document.getElementById("nav-links");
     const hamburger = document.getElementById("hamburger");
-    const token = localStorage.getItem("access_token");
 
     // Event listener for the hamburger icon
     hamburger.addEventListener("click", () => {
@@ -17,13 +20,94 @@ export async function loadNavbar() {
       navRight.classList.toggle("active");
     });
 
-    if (!token) {
-      navLinks.innerHTML = `
-        <a href="/frontend/index.html">Home</a>
-        <a href="/frontend/login.html">Login</a>
-      `;
-    } else {
-      const headers = {
+    const token = localStorage.getItem("access_token");
+
+if (!token) {
+  localStorage_removeItems();  // remove token, role, etc.
+  navLinks.innerHTML = `
+    <a href="/frontend/index.html">Home</a>
+    <a href="/frontend/login.html">Login</a>
+  `;
+} else if(isHomePage && await is_token_expired(token))
+{
+  localStorage_removeItems();
+  navLinks.innerHTML = `
+    <a href="/frontend/index.html">Home</a>
+    <a href="/frontend/login.html">Login</a>
+  `;
+}
+else{
+  
+  const role = localStorage.getItem("role");
+  if (role === "customer") {
+    navLinks.innerHTML = `
+      <a href="/frontend/index.html">Home</a>
+      <a href="/frontend/pages/customer/booking_create.html">Book Now</a>
+      <a href="/frontend/pages/customer/view_bookings.html">Bookings</a>
+      <a href="/frontend/pages/customer/customer_profile.html">Profile</a>
+      <a href="#" id="logout-link">Logout</a>
+    `;
+    document.getElementById("logout-link").addEventListener("click", () => {
+            localStorage_removeItems();
+            window.location.href = "/frontend/index.html";
+          });
+    
+  } else {
+    navLinks.innerHTML = `
+      <a href="/frontend/pages/admin/admin.html">Home</a>
+      <a href="/frontend/pages/admin/view_bookings.html">View Bookings</a>
+      <a href="/frontend/pages/admin/view_revenue.html">View Revenue</a>
+      <a href="/frontend/pages/customer/customer_profile.html">Profile</a>
+      <a href="#" id="logout-link">Logout</a>
+    `;
+    document.getElementById("logout-link").addEventListener("click", () => {
+            localStorage_removeItems();
+            window.location.href = "/frontend/index.html";
+          });
+    
+  }
+}
+
+  } catch (err) {
+    console.error("Auth check failed:", err);
+    localStorage_removeItems();
+    navLinks.innerHTML = `
+      <a href="/frontend/index.html">Home</a>
+      <a href="/frontend/login.html">Login</a>
+    `;
+  }
+}
+
+loadNavbar();
+
+
+          
+function localStorage_removeItems()
+{
+  if(localStorage.getItem("role")==="customer")
+  {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("customer_id");
+    localStorage.removeItem("full_name");
+    localStorage.removeItem("gender");
+    localStorage.removeItem("swimming_minutes");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
+  }
+  else if(localStorage.getItem("role")==="admin")
+  {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("full_name");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("role");
+  }
+}
+
+async function is_token_expired(token)
+{
+  const headers = {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       };
@@ -34,40 +118,4 @@ export async function loadNavbar() {
       if (!userRes.ok) throw new Error("Invalid token");
 
       const user = await userRes.json();
-
-      if (user.role === "customer") {
-        navLinks.innerHTML = `
-          <a href="/frontend/index.html">Home</a>
-          <a href="/frontend/pages/customer/booking_create.html">Book Now</a>
-          <a href="/frontend/pages/customer/view_bookings.html">Bookings</a>
-          <a href="/frontend/pages/customer/customer_profile.html">Profile</a>
-          <a href="#" id="logout-link">Logout</a>
-        `;
-
-        document.getElementById("logout-link").addEventListener("click", () => {
-          localStorage.removeItem("access_token");
-          window.location.href = "/frontend/index.html";
-        });
-      } else {
-        // Temporary fallback for admins
-        navLinks.innerHTML = `
-            <a href="/frontend/pages/admin/admin.html">Home</a>
-            <a href="/frontend/pages/admin/view_bookings.html">View Bookings</a>
-            <a href="/frontend/pages/admin/view_revenue.html">View Revenue</a>
-            <a href="/frontend/pages/customer/customer_profile.html">Profile</a>
-            <a href="#" id="logout-link">Logout</a>
-          `;
-
-          document.getElementById("logout-link").addEventListener("click", () => {
-            localStorage.removeItem("access_token");
-            window.location.href = "/frontend/index.html";
-          });
-          
-      }
-    }
-  } catch (err) {
-    console.error("Navbar loading failed:", err);
-  }
 }
-
-loadNavbar();

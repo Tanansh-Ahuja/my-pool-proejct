@@ -1,4 +1,16 @@
 // view_bookings.js
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    window.location.href = "/frontend/login.html";
+    return;
+  }
+  if (localStorage.getItem("role")!="admin") {
+      alert("You Are not authorised to view this page");
+      window.location.href = "/frontend/index.html";
+      return;
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     const fetchButton = document.getElementById("fetch-bookings-btn");

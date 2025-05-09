@@ -1,4 +1,16 @@
 // view_revenue.js
+document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("access_token");
+  if (!token) {
+    window.location.href = "/frontend/login.html";
+    return;
+  }
+  if (localStorage.getItem("role")!="admin") {
+      alert("You Are not authorised to view this page");
+      window.location.href = "/frontend/index.html";
+      return;
+    }
+});
 
 document.getElementById("fetch-revenue-btn").addEventListener("click", async () => {
     const date = document.getElementById("revenue-date").value;

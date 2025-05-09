@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
   
         const data = await response.json();
+      
   
         if (response.ok && data.access_token) {
-          console.log("inside if");
           localStorage.setItem("access_token", data.access_token);
           const headers = {
             Authorization: `Bearer ${data.access_token}`,
@@ -36,13 +36,24 @@ document.addEventListener("DOMContentLoaded", function () {
           const userRes = await fetch("http://localhost:8000/customers/me", {
             headers,
           });
-          console.log(userRes);
           if (!userRes.ok) throw new Error("Invalid token");
           const user = await userRes.json();
+          localStorage.setItem("customer_id",user.customer_id);
+          localStorage.setItem("full_name",user.full_name);
+          localStorage.setItem("gender",user.gender);
+          localStorage.setItem("swimming_minutes",user.swimming_minutes);
+          localStorage.setItem("username",user.username);
+          localStorage.setItem("email",user.email);
+          localStorage.setItem("role",user.role);
+          
           if (user.role === "customer") {
-            window.location.href = "./pages/customer/customer_bookings.html"; // redirect to next page
+            window.location.href = "/frontend/index.html"; // redirect to next page
           } else {
             // Temporary fallback for admins
+            localStorage.setItem("full_name",user.full_name);
+            localStorage.setItem("username",user.username);
+            localStorage.setItem("email",user.email);
+            localStorage.setItem("role",user.role);
             window.location.href = "/frontend/pages/admin/admin.html"; // redirect to next page
           }
           

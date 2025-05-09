@@ -7,11 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       window.location.href = "/frontend/index.html";
       return;
     }
-  
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
+
+    if (localStorage.getItem("role")!="customer") {
+      alert("You Are not authorised to view this page");
+      window.location.href = "/frontend/index.html";
+      return;
+    }
   
     const fields = ["full_name", "mobile_number", "email", "gender", "age"];
     const inputs = {};
@@ -34,19 +35,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     setEditable(false);
     // Load customer profile
     try {
+      const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
       const res = await fetch("http://localhost:8000/customers/me", {
         headers,
       });
       if (!res.ok) throw new Error("Failed to fetch profile.");
+
       const data = await res.json();
       inputs["full_name"].value = data.full_name;
       inputs["mobile_number"].value = data.phone_number;
-      //inputs["email"].value = data.email;
+      inputs["email"].value = data.email;
       inputs["gender"].value = data.gender;
       inputs["age"].value = data.age;
       document.getElementById("customer_id").value = data.customer_id;
       document.getElementById("username").value = data.username;
       document.getElementById("email").value = data.email;
+
     } catch (err) {
       console.error(err);
       alert("Could not load profile.");

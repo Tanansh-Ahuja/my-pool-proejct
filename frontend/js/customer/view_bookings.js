@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/frontend/login.html";
     return;
   }
+  if (localStorage.getItem("role")!="customer") {
+      alert("You Are not authorised to view this page");
+      window.location.href = "/frontend/index.html";
+      return;
+    }
 
   const decoded = decodeJWT(token);
   const customerId = decoded.customer_id;
